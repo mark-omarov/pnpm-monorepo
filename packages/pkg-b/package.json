@@ -1,0 +1,10 @@
+{
+  "name": "@pnpm-monorepo-semantic/pkg-b",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "private": true,
+  "exports": {
+    ".": "./index.js"
+  }
+}

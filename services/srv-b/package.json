@@ -1,0 +1,14 @@
+{
+  "name": "@pnpm-monorepo-semantic/srv-b",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "@pnpm-monorepo-semantic/pkg-a": "workspace:*",
+    "@pnpm-monorepo-semantic/pkg-b": "workspace:*"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
