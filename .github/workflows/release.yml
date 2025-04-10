@@ -46,4 +46,4 @@ jobs:
           commit: "chore(ci): release"
           title: "chore(ci): release"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_BOT_GITHUB_TOKEN }}
