@@ -1,5 +1,5 @@
 {
-  "name": "@pnpm-monorepo-semantic/pkg-b",
+  "name": "@pnpm-monorepo/pkg-b",
   "version": "0.0.0",
   "type": "module",
   "main": "index.js",

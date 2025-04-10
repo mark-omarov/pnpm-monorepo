@@ -1,8 +1,8 @@
 ---
-"@pnpm-monorepo-semantic/pkg-a": minor
-"@pnpm-monorepo-semantic/pkg-b": minor
-"@pnpm-monorepo-semantic/srv-a": minor
-"@pnpm-monorepo-semantic/srv-b": minor
+"@pnpm-monorepo/pkg-a": minor
+"@pnpm-monorepo/pkg-b": minor
+"@pnpm-monorepo/srv-a": minor
+"@pnpm-monorepo/srv-b": minor
 ---
 
 Initial release

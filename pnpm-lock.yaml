@@ -25,19 +25,19 @@ importers:
 
   services/srv-a:
     dependencies:
-      '@pnpm-monorepo-semantic/pkg-a':
+      '@pnpm-monorepo/pkg-a':
         specifier: workspace:*
         version: link:../../packages/pkg-a
-      '@pnpm-monorepo-semantic/pkg-b':
+      '@pnpm-monorepo/pkg-b':
         specifier: workspace:*
         version: link:../../packages/pkg-b
 
   services/srv-b:
     dependencies:
-      '@pnpm-monorepo-semantic/pkg-a':
+      '@pnpm-monorepo/pkg-a':
         specifier: workspace:*
         version: link:../../packages/pkg-a
-      '@pnpm-monorepo-semantic/pkg-b':
+      '@pnpm-monorepo/pkg-b':
         specifier: workspace:*
         version: link:../../packages/pkg-b
 
