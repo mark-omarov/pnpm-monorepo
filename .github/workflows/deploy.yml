@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Need at least 2 commits for --affected to work
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4.1.0
@@ -51,10 +51,10 @@ jobs:
       - name: Prepare deployment for changed services
         if: github.event_name == 'push'
         run: |
-          CHANGED_SERVICES=$(pnpm turbo run prepare-deploy --filter="...[HEAD^1]" --dry=json | jq -r '.tasks | map(.package) | join(",")')
+          CHANGED_SERVICES=$(ENVIRONMENT=development pnpm turbo run prepare-deploy --affected --dry=json | jq -r '.tasks | map(.package) | join(",")')
           echo "CHANGED_SERVICES=${CHANGED_SERVICES}" >> $GITHUB_ENV
           echo "Detected changes in: ${CHANGED_SERVICES}"
-          ENVIRONMENT=development pnpm turbo run prepare-deploy --filter="...[HEAD^1]"
+          ENVIRONMENT=development pnpm turbo run prepare-deploy --affected
 
       - name: Prepare specific service deployment
         if: github.event_name == 'workflow_dispatch' && inputs.service != 'all'
@@ -75,16 +75,16 @@ jobs:
             echo "No services to deploy"
             exit 0
           fi
-          
+
           # Environment setup
           ENVIRONMENT="${{ github.event_name == 'push' && 'development' || inputs.environment }}"
-          
+
           # For each changed service, create a deployment PR
           for SERVICE in $(echo $CHANGED_SERVICES | tr ',' '\n'); do
             echo "Creating infrastructure PR for ${SERVICE} in ${ENVIRONMENT}"
             SERVICE_VERSION=$(jq -r '.version' services/${SERVICE}/package.json)
             echo "Service ${SERVICE} version: ${SERVICE_VERSION}"
-          
+
             # Mock creating a PR in infrastructure repo
             # In a real scenario, you would:
             # 1. Clone the infrastructure repo
