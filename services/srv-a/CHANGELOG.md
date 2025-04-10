@@ -1,5 +1,11 @@
 # @pnpm-monorepo/srv-a
 
+## 0.3.0
+
+### Minor Changes
+
+- [#8](https://github.com/mark-omarov/pnpm-monorepo/pull/8) [`e0db32f`](https://github.com/mark-omarov/pnpm-monorepo/commit/e0db32f7ba60013028f45c61b44b69086e5caaeb) Thanks [@mark-omarov](https://github.com/mark-omarov)! - feat(srv-a): new cool console log
+
 ## 0.2.0
 
 ### Minor Changes
