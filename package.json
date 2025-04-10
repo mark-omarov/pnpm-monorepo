@@ -9,11 +9,15 @@
   "packageManager": "pnpm@10.8.0",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "build": "pnpm -r build",
-    "version": "changeset version && pnpm install --no-frozen-lockfile"
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "version": "changeset version && pnpm install --no-frozen-lockfile",
+    "prepare-deploy": "node scripts/prepare-deployment.js"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.28.1"
+    "@changesets/cli": "^2.28.1",
+    "turbo": "^2.5.0"
   },
   "dependencies": {
     "@changesets/changelog-github": "^0.5.1"

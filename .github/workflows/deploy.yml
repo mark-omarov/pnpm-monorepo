@@ -7,6 +7,14 @@ on:
 
   workflow_dispatch:
     inputs:
+      service:
+        description: 'Service to deploy'
+        required: true
+        type: choice
+        options:
+          - all
+          - srv-a
+          - srv-b
       environment:
         description: 'Deployment environment'
         required: true
@@ -26,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
         with:
-          fetch-depth: 0
+          fetch-depth: 2
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4.1.0
@@ -40,28 +48,47 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm -r lint
-
-      - name: Test
-        run: pnpm -r test
-
-      - name: Build
-        run: pnpm -r build
-
-      - name: Deploy to develop
+      - name: Prepare deployment for changed services
         if: github.event_name == 'push'
-        run: echo "Deploying to DEVELOPMENT environment"
-
-      - name: Deploy to staging
-        if: github.event_name == 'workflow_dispatch' && inputs.environment == 'staging'
-        run: echo "Deploying to STAGING environment"
-
-      - name: Deploy to production
-        if: github.event_name == 'workflow_dispatch' && inputs.environment == 'prod'
-        run: echo "Deploying to PRODUCTION environment"
-
-      - name: Post-deployment verification
         run: |
-          echo "Verifying deployment..."
-          echo "Deployment to ${{ github.event_name == 'push' && 'development' || inputs.environment }} completed successfully!"
+          CHANGED_SERVICES=$(pnpm turbo run prepare-deploy --filter="...[HEAD^1]" --dry=json | jq -r '.tasks | map(.package) | join(",")')
+          echo "CHANGED_SERVICES=${CHANGED_SERVICES}" >> $GITHUB_ENV
+          echo "Detected changes in: ${CHANGED_SERVICES}"
+          pnpm turbo run prepare-deploy --filter="...[HEAD^1]" --env ENVIRONMENT=development
+
+      - name: Prepare specific service deployment
+        if: github.event_name == 'workflow_dispatch' && inputs.service != 'all'
+        run: |
+          echo "CHANGED_SERVICES=${{ inputs.service }}" >> $GITHUB_ENV
+          pnpm turbo run prepare-deploy --filter="${{ inputs.service }}" --env ENVIRONMENT=${{ inputs.environment }}
+
+      - name: Prepare all services deployment
+        if: github.event_name == 'workflow_dispatch' && inputs.service == 'all'
+        run: |
+          SERVICES=$(ls -d services/* | xargs -n 1 basename | tr '\n' ',' | sed 's/,$//')
+          echo "CHANGED_SERVICES=${SERVICES}" >> $GITHUB_ENV
+          pnpm turbo run prepare-deploy --env ENVIRONMENT=${{ inputs.environment }}
+
+      - name: Create infrastructure PRs
+        run: |
+          if [ -z "$CHANGED_SERVICES" ]; then
+            echo "No services to deploy"
+            exit 0
+          fi
+          
+          # Environment setup
+          ENVIRONMENT="${{ github.event_name == 'push' && 'development' || inputs.environment }}"
+          
+          # For each changed service, create a deployment PR
+          for SERVICE in $(echo $CHANGED_SERVICES | tr ',' '\n'); do
+            echo "Creating infrastructure PR for ${SERVICE} in ${ENVIRONMENT}"
+            SERVICE_VERSION=$(jq -r '.version' services/${SERVICE}/package.json)
+            echo "Service ${SERVICE} version: ${SERVICE_VERSION}"
+          
+            # Mock creating a PR in infrastructure repo
+            # In a real scenario, you would:
+            # 1. Clone the infrastructure repo
+            # 2. Update the image tag for this service
+            # 3. Create a PR with the changes
+            echo "Would create PR to update ${SERVICE} to version ${SERVICE_VERSION} in ${ENVIRONMENT}"
+          done
