@@ -51,10 +51,25 @@ jobs:
       - name: Prepare deployment for changed services
         if: github.event_name == 'push'
         run: |
-          CHANGED_SERVICES=$(ENVIRONMENT=development pnpm turbo run prepare-deploy --affected --dry=json | jq -r '.tasks | map(.package) | join(",")')
+          echo "Checking for packages with unpublished changes..."
+          mkdir -p deployment
+          pnpm exec changeset status --output deployment/status.json
+          CHANGESETS_STATUS=$(cat status.json)
+          echo "Changesets status: $CHANGESETS_STATUS""
+
+          CHANGED_SERVICES=$(echo $CHANGESETS_STATUS | jq -r '.releases[] | select(.name | startswith("@pnpm-monorepo/srv-")) | .name | sub("@pnpm-monorepo/"; "")' | tr '\n' ',' | sed 's/,$//')
+
           echo "CHANGED_SERVICES=${CHANGED_SERVICES}" >> $GITHUB_ENV
-          echo "Detected changes in: ${CHANGED_SERVICES}"
-          ENVIRONMENT=development pnpm turbo run prepare-deploy --affected
+          echo "Detected changes in services: ${CHANGED_SERVICES}"
+
+          if [ -n "$CHANGED_SERVICES" ]; then
+            for SERVICE in $(echo $CHANGED_SERVICES | tr ',' '\n'); do
+              echo "Preparing deployment for ${SERVICE}"
+              ENVIRONMENT=development pnpm turbo run prepare-deploy --filter="./services/${SERVICE}"
+            done
+          else
+            echo "No service changes detected, skipping deployment"
+          fi
 
       - name: Prepare specific service deployment
         if: github.event_name == 'workflow_dispatch' && inputs.service != 'all'
