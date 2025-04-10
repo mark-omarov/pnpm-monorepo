@@ -11,6 +11,10 @@
     "test": {
       "dependsOn": ["build"],
       "outputs": []
+    },
+    "prepare-deploy": {
+      "dependsOn": ["build", "lint", "test"],
+      "outputs": ["deployment/**"]
     }
   }
 }
