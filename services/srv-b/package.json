@@ -9,6 +9,7 @@
     "@pnpm-monorepo/pkg-b": "workspace:*"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "prepare-deploy": "node ../scripts/prepare-deployment.js"
   }
 }

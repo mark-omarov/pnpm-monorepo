@@ -1,10 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
+const currentDir = path.basename(process.cwd());
 const environment = process.env.ENVIRONMENT || 'development';
 const serviceVersion = require('../package.json').version;
 
-console.log(`Preparing deployment for srv-a v${serviceVersion} to ${environment}...`);
+console.log(`Preparing deployment for ${currentDir} v${serviceVersion} to ${environment}...`);
 
 const deploymentDir = path.join(__dirname, '../deployment');
 if (!fs.existsSync(deploymentDir)) {
@@ -12,7 +13,7 @@ if (!fs.existsSync(deploymentDir)) {
 }
 
 const deploymentMetadata = {
-  service: 'srv-a',
+  service: currentDir,
   version: serviceVersion,
   environment: environment,
   timestamp: new Date().toISOString()
