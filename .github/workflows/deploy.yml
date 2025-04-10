@@ -54,20 +54,20 @@ jobs:
           CHANGED_SERVICES=$(pnpm turbo run prepare-deploy --filter="...[HEAD^1]" --dry=json | jq -r '.tasks | map(.package) | join(",")')
           echo "CHANGED_SERVICES=${CHANGED_SERVICES}" >> $GITHUB_ENV
           echo "Detected changes in: ${CHANGED_SERVICES}"
-          pnpm turbo run prepare-deploy --filter="...[HEAD^1]" --env ENVIRONMENT=development
+          ENVIRONMENT=development pnpm turbo run prepare-deploy --filter="...[HEAD^1]"
 
       - name: Prepare specific service deployment
         if: github.event_name == 'workflow_dispatch' && inputs.service != 'all'
         run: |
           echo "CHANGED_SERVICES=${{ inputs.service }}" >> $GITHUB_ENV
-          pnpm turbo run prepare-deploy --filter="${{ inputs.service }}" --env ENVIRONMENT=${{ inputs.environment }}
+          ENVIRONMENT=${{ inputs.environment }} pnpm turbo run prepare-deploy --filter="${{ inputs.service }}"
 
       - name: Prepare all services deployment
         if: github.event_name == 'workflow_dispatch' && inputs.service == 'all'
         run: |
           SERVICES=$(ls -d services/* | xargs -n 1 basename | tr '\n' ',' | sed 's/,$//')
           echo "CHANGED_SERVICES=${SERVICES}" >> $GITHUB_ENV
-          pnpm turbo run prepare-deploy --env ENVIRONMENT=${{ inputs.environment }}
+          ENVIRONMENT=${{ inputs.environment }} pnpm turbo run prepare-deploy
 
       - name: Create infrastructure PRs
         run: |
