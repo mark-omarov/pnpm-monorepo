@@ -54,7 +54,7 @@ jobs:
           echo "Checking for packages with unpublished changes..."
           mkdir -p deployment
           pnpm exec changeset status --output deployment/status.json
-          CHANGESETS_STATUS=$(cat status.json)
+          CHANGESETS_STATUS=$(cat deployment/status.json)
           echo "Changesets status: $CHANGESETS_STATUS""
 
           CHANGED_SERVICES=$(echo $CHANGESETS_STATUS | jq -r '.releases[] | select(.name | startswith("@pnpm-monorepo/srv-")) | .name | sub("@pnpm-monorepo/"; "")' | tr '\n' ',' | sed 's/,$//')
