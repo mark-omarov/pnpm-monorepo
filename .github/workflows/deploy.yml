@@ -55,8 +55,7 @@ jobs:
           mkdir -p deployment
           pnpm exec changeset status --output ./deployment/status.json
           CHANGESETS_STATUS=$(cat ./deployment/status.json)
-          ls -la ./deployment
-          echo "Changesets status: $CHANGESETS_STATUS""
+          echo "Changesets status: $CHANGESETS_STATUS"
 
           CHANGED_SERVICES=$(echo $CHANGESETS_STATUS | jq -r '.releases[] | select(.name | startswith("@pnpm-monorepo/srv-")) | .name | sub("@pnpm-monorepo/"; "")' | tr '\n' ',' | sed 's/,$//')
 
