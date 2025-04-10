@@ -1,5 +1,11 @@
 # @pnpm-monorepo/srv-a
 
+## 0.2.0
+
+### Minor Changes
+
+- [#6](https://github.com/mark-omarov/pnpm-monorepo/pull/6) [`6b3c5c6`](https://github.com/mark-omarov/pnpm-monorepo/commit/6b3c5c62568efad6f38889a2fea0426ee6db91d4) Thanks [@mark-omarov](https://github.com/mark-omarov)! - New cool feature - no feature, because why not...
+
 ## 0.1.0
 
 ### Minor Changes
