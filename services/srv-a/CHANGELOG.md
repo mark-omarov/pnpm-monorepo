@@ -1,5 +1,11 @@
 # @pnpm-monorepo/srv-a
 
+## 0.4.0
+
+### Minor Changes
+
+- [#10](https://github.com/mark-omarov/pnpm-monorepo/pull/10) [`6dd2e8e`](https://github.com/mark-omarov/pnpm-monorepo/commit/6dd2e8ec0de347d3c05d35c75a194df8cb80ecf3) Thanks [@mark-omarov](https://github.com/mark-omarov)! - feat: remove console feature
+
 ## 0.3.0
 
 ### Minor Changes
