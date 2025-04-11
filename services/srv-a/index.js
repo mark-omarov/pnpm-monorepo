@@ -7,4 +7,3 @@ const greeting = formatGreeting(name);
 
 console.log(`Calculation result: ${result}`);
 console.log(greeting);
-console.log('New feature')
